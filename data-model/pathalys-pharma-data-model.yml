@@ -1,0 +1,115 @@
+generated: '2026-08-26'
+method: derived
+source: openapi/pathalys-pharma-*-openapi.yml and live responses from https://pathalys.com/wp-json/wp/v2/
+summary: >-
+  The entity graph of the Pathalys Pharma content API. It is the standard WordPress content model as
+  populated on this specific site — a small corporate estate of 14 posts, 7 pages, 104 media items and
+  2 category terms.
+identifier_scheme:
+  style: integer
+  detail: >-
+    Every entity is keyed by an auto-increment integer `id`, unique within the WordPress posts table
+    across posts, pages and attachments. There are no prefixed or namespaced identifiers. A
+    human-stable secondary key exists as `slug`, which is unique per post type and is the value that
+    appears in the public URL.
+entities:
+- name: Post
+  collection: /wp/v2/posts
+  count_observed: 14
+  description: A Pathalys news item, press release or scientific update.
+  key_fields: [id, slug, date, modified, status, link, title.rendered, content.rendered, excerpt.rendered]
+  relationships:
+  - type: belongs_to
+    target: User
+    via: author
+  - type: has_one
+    target: MediaItem
+    via: featured_media
+  - type: has_many
+    target: Term
+    via: categories
+  - type: has_many
+    target: Term
+    via: tags
+    note: post_tag taxonomy is empty on this site.
+  - type: has_many
+    target: Comment
+    via: _links.replies
+    note: Comments collection is empty on this site.
+- name: Page
+  collection: /wp/v2/pages
+  count_observed: 7
+  description: A corporate page — Home, Team, News, Scientific Updates, Contact us, Privacy Policy, Terms of Use.
+  key_fields: [id, slug, title.rendered, content.rendered, parent, menu_order, template]
+  relationships:
+  - type: belongs_to
+    target: User
+    via: author
+  - type: belongs_to
+    target: Page
+    via: parent
+    note: All 7 pages are top-level; parent is 0 throughout.
+  - type: has_one
+    target: MediaItem
+    via: featured_media
+- name: MediaItem
+  collection: /wp/v2/media
+  count_observed: 104
+  description: A media library attachment — the Pathalys wordmark, favicon, team portraits and press imagery.
+  key_fields: [id, slug, media_type, mime_type, source_url, alt_text, media_details]
+  relationships:
+  - type: belongs_to
+    target: Post
+    via: post
+    note: The post or page the attachment was uploaded to.
+- name: Term
+  collection: /wp/v2/categories
+  count_observed: 2
+  description: A category taxonomy term. News (id 1, 13 posts) and Scientific Updates (id 11, 1 post).
+  key_fields: [id, slug, name, taxonomy, count, parent]
+  relationships:
+  - type: has_many
+    target: Post
+    via: categories
+  - type: belongs_to
+    target: Term
+    via: parent
+    note: Both terms are top-level.
+- name: Comment
+  collection: /wp/v2/comments
+  count_observed: 0
+  description: A comment on a post. Registered and readable but unpopulated.
+  key_fields: [id, post, parent, author_name, date, content.rendered, status]
+  relationships:
+  - type: belongs_to
+    target: Post
+    via: post
+  - type: belongs_to
+    target: Comment
+    via: parent
+- name: SearchResult
+  collection: /wp/v2/search
+  description: A denormalized projection over Post and Page for cross-content search.
+  key_fields: [id, title, url, type, subtype]
+  relationships:
+  - type: belongs_to
+    target: Post
+    via: id
+    note: >-
+      `subtype` disambiguates whether the id resolves against /wp/v2/posts or /wp/v2/pages.
+- name: ContentType
+  collection: /wp/v2/types
+  description: Registered post-type descriptors — 13 on this install, of which post, page and attachment are publicly meaningful.
+  key_fields: [slug, name, rest_base, taxonomies, hierarchical]
+- name: Taxonomy
+  collection: /wp/v2/taxonomies
+  description: Registered taxonomy descriptors.
+  key_fields: [slug, name, rest_base, types, hierarchical]
+excluded_entities:
+- name: User
+  collection: /wp/v2/users
+  reason: >-
+    Anonymously readable (2 records) but deliberately not modelled in the OpenAPI artifacts, under
+    API Evangelist's enrichment PII guardrail. It is referenced here only as the target of the
+    `author` relationship.
+render: null

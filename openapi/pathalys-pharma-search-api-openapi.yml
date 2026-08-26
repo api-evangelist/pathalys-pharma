@@ -1,0 +1,193 @@
+openapi: 3.2.0
+info:
+  title: Pathalys Pharma Content API (WordPress REST API) Search API
+  version: wp/v2
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  contact:
+    name: Pathalys Pharma, Inc.
+    url: https://pathalys.com/contact/
+  x-derived-from: https://pathalys.com/wp-json/
+  x-derived-on: '2026-08-26'
+  x-api-evangelist-note: Derived by the API Evangelist enrichment pipeline from the provider-published WordPress REST route index; not authored or endorsed by Pathalys Pharma, Inc.
+servers:
+- url: https://pathalys.com/wp-json
+  description: Production
+security:
+- {}
+tags:
+- name: Search
+  description: Cross-content search over posts and pages
+paths:
+  /wp/v2/search:
+    get:
+      operationId: searchContent
+      tags:
+      - Search
+      summary: Search across posts and pages
+      description: Cross-content search over the Pathalys corporate site. A search for `upacicalcet` returned 17 matches at the time of derivation. Returns X-WP-Total / X-WP-TotalPages.
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/per_page'
+      - $ref: '#/components/parameters/search'
+      - $ref: '#/components/parameters/fields'
+      - name: type
+        in: query
+        description: Limit results to items of an object type.
+        schema:
+          type: string
+          default: post
+          enum:
+          - post
+          - term
+          - post-format
+      - name: subtype
+        in: query
+        description: Limit results to items of one or more object subtypes.
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - post
+            - page
+            - any
+          default:
+          - any
+      - name: exclude
+        in: query
+        description: Ensure result set excludes specific IDs.
+        schema:
+          type: array
+          items:
+            type: integer
+      - name: include
+        in: query
+        description: Limit result set to specific IDs.
+        schema:
+          type: array
+          items:
+            type: integer
+      responses:
+        '200':
+          description: A page of search results.
+          headers:
+            X-WP-Total:
+              description: Total number of items in the collection.
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              description: Total number of pages in the collection.
+              schema:
+                type: integer
+            Link:
+              description: RFC 8288 pagination links (`rel="next"` / `rel="prev"`).
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchResult'
+        '400':
+          description: One or more query parameters failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: rest_invalid_param
+                message: One or more query parameters failed validation.
+                data:
+                  status: 400
+components:
+  parameters:
+    context:
+      name: context
+      in: query
+      description: Scope under which the request is made; determines fields present in the response. Only `view` and `embed` are available anonymously.
+      schema:
+        type: string
+        default: view
+        enum:
+        - view
+        - embed
+    page:
+      name: page
+      in: query
+      description: Current page of the collection.
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    per_page:
+      name: per_page
+      in: query
+      description: Maximum number of items to be returned in the result set.
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+    search:
+      name: search
+      in: query
+      description: Limit results to those matching a string.
+      schema:
+        type: string
+    fields:
+      name: _fields
+      in: query
+      description: Sparse fieldset — comma-separated list of fields to return.
+      schema:
+        type: string
+      example: id,slug,title,link,date
+  schemas:
+    SearchResult:
+      type: object
+      description: A cross-content search result.
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the object.
+        title:
+          type: string
+          description: The title for the object.
+        url:
+          type: string
+          format: uri
+        type:
+          type: string
+          description: Object type.
+          example: post
+        subtype:
+          type: string
+          description: Object subtype.
+          example: page
+        _links:
+          type: object
+    Error:
+      type: object
+      description: WordPress REST API error envelope (WP_Error serialization). Not RFC 9457 problem+json; the HTTP status is repeated inside `data.status`.
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+          example: rest_post_invalid_id
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              description: HTTP status code, repeated in the body.
+              example: 404
+      required:
+      - code
+      - message

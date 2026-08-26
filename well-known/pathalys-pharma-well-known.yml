@@ -1,0 +1,55 @@
+generated: '2026-08-26'
+method: probed
+source: live HTTPS probes of https://pathalys.com/.well-known/* on 2026-08-26
+note: >-
+  Every /.well-known/ path probed on the single host Pathalys Pharma operates returned 404. The site
+  is a WordPress install on WP Engine and serves no discovery documents. Two distinct 404 bodies were
+  observed — the WordPress themed 404 page (45,832 bytes, text/html) for paths WordPress routes, and
+  a bare nginx-level 404 (548 bytes) for /.well-known/security.txt and /llms.txt — so this host is
+  NOT a soft-200 catch-all; the negatives are real. No WellKnown and no SecurityTxt pointer is wired
+  in apis.yml, because a file that records an absence must not be scored as a presence.
+hit_count: 0
+hosts:
+- host: https://pathalys.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+soft_404_control:
+  path: /this-should-not-exist-404-control
+  status: 404
+  bytes: 45832
+  note: Control path returns a real 404, confirming the host is not a catch-all 200.
+related_probes:
+- url: https://pathalys.com/llms.txt
+  status: 404
+- url: https://pathalys.com/openapi.json
+  status: 404
+- url: https://pathalys.com/swagger.json
+  status: 404
+- url: https://pathalys.com/graphql
+  status: 404
+- url: https://pathalys.com/robots.txt
+  status: 200
+  note: Serves a robots.txt disallowing /wp-admin/ with Crawl-delay 10 and a sitemap pointer.
+- url: https://pathalys.com/wp-json/
+  status: 200
+  note: The one machine-readable surface found — the WordPress REST route index.

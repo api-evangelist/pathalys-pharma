@@ -1,0 +1,78 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Pathalys Pharma content API
+  version: 1.0.0
+  description: >-
+    Captures the enrichment this pipeline applied on top of the raw WordPress REST route index —
+    provider identity, licensing and provenance, agent-facing pacing guidance, and cross-links to the
+    derived artifacts in this repository. Applied to each openapi/pathalys-pharma-*-openapi.yml
+    document. The original specs are never mutated by this overlay; it records what we added and why.
+extends: openapi/pathalys-pharma-posts-api-openapi.yml
+x-applies-to:
+- openapi/pathalys-pharma-posts-api-openapi.yml
+- openapi/pathalys-pharma-pages-api-openapi.yml
+- openapi/pathalys-pharma-media-api-openapi.yml
+- openapi/pathalys-pharma-categories-api-openapi.yml
+- openapi/pathalys-pharma-comments-api-openapi.yml
+- openapi/pathalys-pharma-search-api-openapi.yml
+- openapi/pathalys-pharma-discovery-api-openapi.yml
+actions:
+- target: $.info
+  description: Attach provenance, provider identity and the derivation date.
+  update:
+    x-provider: Pathalys Pharma, Inc.
+    x-provider-website: https://pathalys.com/
+    x-provider-headquarters: 4000 Center at North Hills Street, Suite 470, Raleigh, NC 27609, United States
+    x-derived-by: API Evangelist enrichment pipeline
+    x-derived-from: https://pathalys.com/wp-json/
+    x-derived-on: '2026-08-26'
+    x-not-a-developer-program: true
+    x-provider-note: >-
+      Pathalys Pharma does not operate a developer program, publish API documentation, or issue
+      credentials. This contract describes the incidental WordPress REST surface of its corporate
+      website. It is a third-party derivation, not a provider commitment, and Pathalys may change or
+      remove it without notice.
+- target: $.info
+  description: Record the upstream documentation for the underlying platform contract.
+  update:
+    x-upstream-documentation: https://developer.wordpress.org/rest-api/
+    x-platform: WordPress REST API (namespace wp/v2)
+    x-hosting: WP Engine
+- target: $.servers[0]
+  description: Note that the base is the site root plus /wp-json, not a dedicated API host.
+  update:
+    x-host-kind: website
+    x-note: >-
+      There is no api.pathalys.com. The API is served from the marketing site's own origin, so it
+      shares that origin's edge cache, TLS certificate and availability.
+- target: $
+  description: Cross-link the derived artifacts that carry the runtime semantics this spec does not.
+  update:
+    x-api-evangelist-artifacts:
+      authentication: authentication/pathalys-pharma-authentication.yml
+      conventions: conventions/pathalys-pharma-conventions.yml
+      errors: errors/pathalys-pharma-problem-types.yml
+      lifecycle: lifecycle/pathalys-pharma-lifecycle.yml
+      conformance: conformance/pathalys-pharma-conformance.yml
+      data_model: data-model/pathalys-pharma-data-model.yml
+      rate_limits: rate-limits/pathalys-pharma-rate-limits.yml
+      well_known: well-known/pathalys-pharma-well-known.yml
+      skills: skills/_index.yml
+- target: $
+  description: State the pacing an agent should adopt, since the API publishes no rate-limit signal.
+  update:
+    x-agent-guidance:
+      rate_limit_headers: none
+      stated_crawl_delay_seconds: 10
+      source: https://pathalys.com/robots.txt
+      edge_cache_seconds: 600
+      advice: >-
+        No runtime budget signal is returned. Honour the robots.txt Crawl-delay of 10 seconds, prefer
+        `_fields` to trim payloads, and use `_embed` instead of following `_links` one request at a
+        time.
+- target: $.paths..get
+  description: Mark the whole public surface read-only and safe to retry.
+  update:
+    x-read-only: true
+    x-safe-to-retry: true
+    x-write-surface: none

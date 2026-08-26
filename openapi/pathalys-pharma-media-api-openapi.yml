@@ -1,0 +1,331 @@
+openapi: 3.2.0
+info:
+  title: Pathalys Pharma Content API (WordPress REST API) Media API
+  version: wp/v2
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  contact:
+    name: Pathalys Pharma, Inc.
+    url: https://pathalys.com/contact/
+  x-derived-from: https://pathalys.com/wp-json/
+  x-derived-on: '2026-08-26'
+  x-api-evangelist-note: Derived by the API Evangelist enrichment pipeline from the provider-published WordPress REST route index; not authored or endorsed by Pathalys Pharma, Inc.
+servers:
+- url: https://pathalys.com/wp-json
+  description: Production
+security:
+- {}
+tags:
+- name: Media
+  description: Media library — logos, team photography and press imagery
+paths:
+  /wp/v2/media:
+    get:
+      operationId: listMedia
+      tags:
+      - Media
+      summary: List media items
+      description: Lists the pathalys.com media library — the Pathalys wordmark (pathalys_logo.svg), the favicon, team portraits and press imagery. `source_url` gives the direct CDN path under /wp-content/uploads/.
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/per_page'
+      - $ref: '#/components/parameters/search'
+      - $ref: '#/components/parameters/after'
+      - $ref: '#/components/parameters/before'
+      - $ref: '#/components/parameters/modified_after'
+      - $ref: '#/components/parameters/modified_before'
+      - $ref: '#/components/parameters/exclude'
+      - $ref: '#/components/parameters/include'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/order'
+      - $ref: '#/components/parameters/slug'
+      - $ref: '#/components/parameters/fields'
+      - $ref: '#/components/parameters/embed'
+      - name: media_type
+        in: query
+        description: Limit result set to attachments of a particular media type.
+        schema:
+          type: string
+          enum:
+          - image
+          - video
+          - text
+          - application
+          - audio
+      - name: mime_type
+        in: query
+        description: Limit result set to attachments of a particular MIME type.
+        schema:
+          type: string
+      - name: parent
+        in: query
+        description: Limit result set to items with particular parent IDs.
+        schema:
+          type: array
+          items:
+            type: integer
+      responses:
+        '200':
+          description: A page of media items.
+          headers:
+            X-WP-Total:
+              description: Total number of items in the collection.
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              description: Total number of pages in the collection.
+              schema:
+                type: integer
+            Link:
+              description: RFC 8288 pagination links (`rel="next"` / `rel="prev"`).
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MediaItem'
+        '400':
+          description: One or more query parameters failed validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: rest_invalid_param
+                message: One or more query parameters failed validation.
+                data:
+                  status: 400
+  /wp/v2/media/{id}:
+    get:
+      operationId: getMediaItem
+      tags:
+      - Media
+      summary: Retrieve a single media item
+      description: Retrieves one media library item by ID. Media 205 is the Pathalys logo (image/svg+xml).
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/id_path'
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/fields'
+      - $ref: '#/components/parameters/embed'
+      responses:
+        '200':
+          description: The media item.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaItem'
+        '404':
+          description: Invalid post ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: rest_post_invalid_id
+                message: Invalid post ID.
+                data:
+                  status: 404
+components:
+  parameters:
+    context:
+      name: context
+      in: query
+      description: Scope under which the request is made; determines fields present in the response. Only `view` and `embed` are available anonymously.
+      schema:
+        type: string
+        default: view
+        enum:
+        - view
+        - embed
+    page:
+      name: page
+      in: query
+      description: Current page of the collection.
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    per_page:
+      name: per_page
+      in: query
+      description: Maximum number of items to be returned in the result set.
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+    search:
+      name: search
+      in: query
+      description: Limit results to those matching a string.
+      schema:
+        type: string
+    after:
+      name: after
+      in: query
+      description: Limit response to posts published after a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    before:
+      name: before
+      in: query
+      description: Limit response to posts published before a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    modified_after:
+      name: modified_after
+      in: query
+      description: Limit response to posts modified after a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    modified_before:
+      name: modified_before
+      in: query
+      description: Limit response to posts modified before a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    exclude:
+      name: exclude
+      in: query
+      description: Ensure result set excludes specific IDs.
+      schema:
+        type: array
+        items:
+          type: integer
+    include:
+      name: include
+      in: query
+      description: Limit result set to specific IDs.
+      schema:
+        type: array
+        items:
+          type: integer
+    offset:
+      name: offset
+      in: query
+      description: Offset the result set by a specific number of items.
+      schema:
+        type: integer
+    order:
+      name: order
+      in: query
+      description: Order sort attribute ascending or descending.
+      schema:
+        type: string
+        default: desc
+        enum:
+        - asc
+        - desc
+    slug:
+      name: slug
+      in: query
+      description: Limit result set to items with one or more specific slugs.
+      schema:
+        type: array
+        items:
+          type: string
+    fields:
+      name: _fields
+      in: query
+      description: Sparse fieldset — comma-separated list of fields to return.
+      schema:
+        type: string
+      example: id,slug,title,link,date
+    embed:
+      name: _embed
+      in: query
+      description: Embed linked resources (featured media, terms, author) into the `_embedded` member.
+      schema:
+        type: string
+    id_path:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier for the resource.
+      schema:
+        type: integer
+  schemas:
+    MediaItem:
+      type: object
+      description: A media library item — logos, team photography, press-release imagery and PDFs. 104 items at the time of derivation.
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+          format: date-time
+        slug:
+          type: string
+        type:
+          type: string
+          example: attachment
+        link:
+          type: string
+          format: uri
+        title: &id001
+          type: object
+          description: A WordPress rendered-content object.
+          properties:
+            rendered:
+              type: string
+              description: HTML for the object, transformed for display.
+            protected:
+              type: boolean
+              description: Whether the content is password protected.
+        author:
+          type: integer
+        caption: *id001
+        alt_text:
+          type: string
+          description: Alternative text to display when attachment is not displayed.
+        media_type:
+          type: string
+          enum:
+          - image
+          - file
+        mime_type:
+          type: string
+          example: image/svg+xml
+        media_details:
+          type: object
+          description: Details about the media file, specific to its type — width/height and the generated `sizes` map for images.
+        post:
+          type: integer
+          description: The ID for the associated post of the attachment.
+        source_url:
+          type: string
+          format: uri
+          description: URL to the original attachment file.
+          example: https://pathalys.com/wp-content/uploads/2021/09/pathalys_logo.svg
+    Error:
+      type: object
+      description: WordPress REST API error envelope (WP_Error serialization). Not RFC 9457 problem+json; the HTTP status is repeated inside `data.status`.
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+          example: rest_post_invalid_id
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              description: HTTP status code, repeated in the body.
+              example: 404
+      required:
+      - code
+      - message

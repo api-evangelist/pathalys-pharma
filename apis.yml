@@ -1,18 +1,176 @@
 aid: pathalys-pharma
 name: Pathalys Pharma
-description: 'Pathalys Pharma is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Pathalys Pharma, Inc. is a private, late-stage clinical biopharmaceutical company headquartered at
+  4000 Center at North Hills Street, Raleigh, North Carolina, in the Research Triangle Park region.
+  It was created with initial funding from Catalys Pacific and the DaVita Venture Group to be a
+  multi-asset biopharmaceutical company focused on the needs of patients with end-stage kidney
+  disease, and it develops advanced therapeutics addressing unmet needs in the management of
+  late-stage chronic kidney disease (CKD). Its lead asset is upacicalcet, a novel non-peptide
+  calcimimetic delivered intravenously by pre-filled syringe at the end of a hemodialysis session
+  for the treatment of secondary hyperparathyroidism (SHPT) in patients with end-stage kidney
+  disease on hemodialysis; it is an investigational product candidate in the United States, subject
+  to FDA review. Pathalys raised $150 million in secured product financing and equity led by
+  Abingworth in January 2023 alongside a development collaboration with Launch Therapeutics to run
+  the pivotal PATH Phase 3 program, and closed an oversubscribed $105 million Series B in August
+  2024 to fund NDA submission and pre-commercialization. Pathalys runs no developer program and
+  publishes no product API; the only machine-readable surface it exposes is the anonymously readable
+  WordPress REST content API behind pathalys.com, which serves the corporate site, the news and
+  scientific-updates stream, and the media library.
+image: https://pathalys.com/wp-content/uploads/2021/09/pathalys_logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/pathalys-pharma/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+x-tier: profiled
+x-tier-reason: enriched
+specificationVersion: '0.23'
 created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-apis: []
+- Pharmaceuticals
+- Biotechnology
+- Nephrology
+- Chronic Kidney Disease
+- Clinical Trials
+- Life Sciences
+- Content API
+tags_raw:
+- Company
+- pharmaceuticals
+- biotechnology
+- nephrology
+- chronic-kidney-disease
+- clinical-trials
+- life-sciences
+- content-api
+apis:
+- aid: pathalys-pharma:pathalys-pharma-posts-api
+  name: Pathalys Pharma Posts API
+  description: Pathalys Pharma news, press releases and scientific updates
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Posts
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-posts-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-pages-api
+  name: Pathalys Pharma Pages API
+  description: Corporate pages — company, team, science, contact and legal
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-pages-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-media-api
+  name: Pathalys Pharma Media API
+  description: Media library — logos, team photography and press imagery
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Media
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-media-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-categories-api
+  name: Pathalys Pharma Categories API
+  description: Post categories and tags taxonomy
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-categories-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-comments-api
+  name: Pathalys Pharma Comments API
+  description: Comments on posts (collection is empty on this site)
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Comments
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-comments-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-search-api
+  name: Pathalys Pharma Search API
+  description: Cross-content search over posts and pages
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Search
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-search-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
+- aid: pathalys-pharma:pathalys-pharma-discovery-api
+  name: Pathalys Pharma Discovery API
+  description: Site index, route/namespace table, content types, taxonomies, statuses and oEmbed
+  humanURL: https://developer.wordpress.org/rest-api/
+  baseURL: https://pathalys.com/wp-json
+  tags:
+  - Discovery
+  properties:
+  - type: OpenAPI
+    url: openapi/pathalys-pharma-discovery-api-openapi.yml
+  - type: Authentication
+    url: authentication/pathalys-pharma-authentication.yml
+  - type: ErrorCatalog
+    url: errors/pathalys-pharma-problem-types.yml
+  - type: Conventions
+    url: conventions/pathalys-pharma-conventions.yml
+  - type: DataModel
+    url: data-model/pathalys-pharma-data-model.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +178,89 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
+  url: https://pathalys.com/
+- type: Team
+  url: https://pathalys.com/team/
+- type: News
+  url: https://pathalys.com/news/
+- type: Science
+  url: https://pathalys.com/scientific-updates/
+- type: Blog
+  url: https://pathalys.com/news/
+- type: BlogRSS
+  url: https://pathalys.com/feed/
+- type: Contact
+  url: https://pathalys.com/contact/
+- type: Support
+  url: https://pathalys.com/contact/
+- type: PrivacyPolicy
+  url: https://pathalys.com/privacy-policy/
+- type: TermsOfService
+  url: https://pathalys.com/terms-of-use/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/pathalys
+- type: SecondaryMarket
   url: https://forgeglobal.com/pathalys-pharma_stock/
+- type: Documentation
+  url: https://developer.wordpress.org/rest-api/
+- type: Overlay
+  url: overlays/pathalys-pharma-content-overlay.yaml
+- type: Authentication
+  url: authentication/pathalys-pharma-authentication.yml
+- type: Conventions
+  url: conventions/pathalys-pharma-conventions.yml
+- type: Conformance
+  url: conformance/pathalys-pharma-conformance.yml
+- type: ErrorCatalog
+  url: errors/pathalys-pharma-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/pathalys-pharma-lifecycle.yml
+- type: DataModel
+  url: data-model/pathalys-pharma-data-model.yml
+- type: DomainSecurity
+  url: security/pathalys-pharma-domain-security.yml
+- type: Plans
+  url: plans/pathalys-pharma-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/pathalys-pharma-rate-limits.yml
+- type: LLMsTxt
+  url: llms/pathalys-pharma-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-pointer-verification:
+  checked: '2026-08-26'
+  method: HTTP GET with a browser User-Agent, following redirects
+  results:
+  - url: https://pathalys.com/
+    status: 200
+  - url: https://pathalys.com/team/
+    status: 200
+  - url: https://pathalys.com/news/
+    status: 200
+  - url: https://pathalys.com/scientific-updates/
+    status: 200
+  - url: https://pathalys.com/contact/
+    status: 200
+  - url: https://pathalys.com/privacy-policy/
+    status: 200
+  - url: https://pathalys.com/terms-of-use/
+    status: 200
+  - url: https://pathalys.com/feed/
+    status: 200
+  - url: https://www.linkedin.com/company/pathalys
+    status: 200
+  - url: https://developer.wordpress.org/rest-api/
+    status: 200
+  - url: https://pathalys.com/wp-json/
+    status: 200
+  - url: https://forgeglobal.com/pathalys-pharma_stock/
+    status: 403
+    note: >-
+      Bot challenge, not a dead page — Forge Global fronts its company pages with an edge policy that
+      refuses non-browser clients. Retained as SecondaryMarket (the harvest source), not as Website.
+      The company's real website is https://pathalys.com/, which the stub previously did not carry.
+x-enrichment:
+  date: '2026-08-26'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1

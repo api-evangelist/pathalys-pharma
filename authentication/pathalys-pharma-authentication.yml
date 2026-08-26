@@ -1,0 +1,54 @@
+generated: '2026-08-26'
+method: probed
+source: https://pathalys.com/wp-json/ (site index `authentication` block) plus anonymous read probes on 2026-08-26
+summary: >-
+  Pathalys Pharma publishes no developer program, issues no API keys, and operates no OAuth server.
+  The content API described in openapi/ is the WordPress REST API on pathalys.com, whose entire read
+  surface is anonymous — every operation modelled in this repo was verified to return HTTP 200 with
+  no credentials. Authenticated access exists only for site administrators, over WordPress's own
+  mechanisms, and is not offered to third parties.
+schemes: []
+anonymous_access:
+  supported: true
+  verified: '2026-08-26'
+  note: >-
+    GET on /wp/v2/posts, /wp/v2/pages, /wp/v2/media, /wp/v2/categories, /wp/v2/tags, /wp/v2/comments,
+    /wp/v2/search, /wp/v2/types, /wp/v2/taxonomies, /wp/v2/statuses, /oembed/1.0/embed and the site
+    index all returned 200 unauthenticated. `context=edit` is rejected anonymously; only `view` and
+    `embed` are available.
+administrative_authentication:
+  advertised_by_provider: true
+  source: https://pathalys.com/wp-json/
+  mechanisms:
+  - type: application-passwords
+    standard: WordPress Application Passwords (HTTP Basic over TLS)
+    authorization_endpoint: https://pathalys.com/wp-admin/authorize-application.php
+    note: >-
+      Advertised in the `authentication` member of the REST site index. This is WordPress's built-in
+      administrative credential flow for the site's own operators — not a public API program. No
+      registration, self-service signup, or developer key issuance exists.
+  - type: cookie-nonce
+    standard: WordPress cookie authentication with an X-WP-Nonce header
+    note: >-
+      Implied by the Access-Control-Allow-Headers response header, which lists Authorization and
+      X-WP-Nonce. Only usable from a logged-in browser session on pathalys.com.
+gated_operations:
+- path: /wp/v2/settings
+  method: GET
+  status: 401
+  code: rest_forbidden
+  note: Observed 401 anonymously — confirms the site enforces auth where WordPress expects it.
+- path: /wp/v2/users
+  method: GET
+  status: 200
+  note: >-
+    Anonymously readable (WordPress default for authors of published posts). Not modelled in the
+    OpenAPI artifacts in this repo, by API Evangelist's enrichment PII guardrail.
+transport:
+  tls: required
+  tls_version_observed: TLSv1.3
+  hsts: false
+oauth2: false
+openid_connect: false
+mutual_tls: false
+api_keys: false

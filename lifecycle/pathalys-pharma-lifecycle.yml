@@ -1,0 +1,53 @@
+generated: '2026-08-26'
+method: derived
+source: >-
+  https://pathalys.com/wp-json/ route index, live probes on 2026-08-26, and a search of pathalys.com
+  for versioning, deprecation, SLA and status pages
+summary: >-
+  Pathalys Pharma publishes no API lifecycle policy of any kind, because it publishes no API program.
+  The lifecycle facts below belong to the WordPress REST API the corporate site happens to expose,
+  and are properties of WordPress core rather than commitments Pathalys has made.
+versioning:
+  scheme: path-namespace
+  current: wp/v2
+  namespaces_registered: 20
+  publicly_usable_namespaces: [wp/v2, oembed/1.0]
+  provider_policy: none-published
+  note: >-
+    wp/v2 has been the stable WordPress REST namespace since WordPress 4.7 (2016). Version changes
+    would arrive with a WordPress core upgrade, on WordPress's schedule, not Pathalys's.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: >-
+    No RFC 8594 Sunset or Deprecation headers were observed on any response. No deprecation notice,
+    migration guide or end-of-life calendar exists on pathalys.com.
+status_page:
+  published: false
+  url: null
+  note: >-
+    No status.pathalys.com, no statuspage.io/instatus tenant, and no uptime page linked from the
+    site. Hosting is WP Engine, whose own status page covers the platform, not this tenant.
+sla:
+  published: false
+  note: No availability or support-response commitment is published.
+support:
+  channel: web-form
+  url: https://pathalys.com/contact/
+  note: >-
+    A single corporate contact form at the Raleigh headquarters. There is no developer support
+    channel, ticketing system, forum or community.
+changelog:
+  published: false
+  note: >-
+    No API changelog. The nearest dated stream is the corporate news feed at
+    https://pathalys.com/news/ (RSS at https://pathalys.com/feed/), which covers company milestones
+    — 14 items between October 2020 and May 2026 — not API changes.
+stability:
+  content_velocity: low
+  observed: >-
+    14 posts and 7 pages total; the most recent post is 2026-05-22 and the one before it 2024-08-20.
+    A consumer should expect this surface to change on the order of months, not days.

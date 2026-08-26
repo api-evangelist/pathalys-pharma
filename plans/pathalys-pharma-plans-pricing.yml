@@ -1,0 +1,13 @@
+generated: '2026-08-26'
+method: searched
+source: https://pathalys.com/ (full site walked 2026-08-26 — no pricing, plans, or commercial API page exists)
+plan_count: 0
+plans: []
+note: >-
+  Pathalys Pharma publishes no API plans, no pricing page and no commercial API offering — not even
+  an enterprise "contact us" tier, because there is no API product to contact anyone about. It is a
+  private, late-stage clinical biopharmaceutical company whose revenue model is a drug candidate
+  (upacicalcet) still pending FDA review, not software. The content API described in this repo is the
+  WordPress REST surface behind the corporate site: free, anonymous, unmetered and entirely
+  incidental. Recorded as an explicit zero rather than omitted, so the absence is measured rather
+  than assumed.

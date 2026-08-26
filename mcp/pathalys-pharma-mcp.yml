@@ -1,0 +1,57 @@
+generated: '2026-08-26'
+method: derived
+source: openapi/pathalys-pharma-*-openapi.yml (derived candidate); searched for a published server 2026-08-26
+status: candidate
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: none
+  verified: searched
+search_record:
+  npm_query: 'registry.npmjs.org search "pathalys" -> 0 results'
+  pypi: 'pypi.org/pypi/pathalys/json -> 404'
+  github_org: 'github.com/pathalys -> 404'
+  probes:
+  - url: https://pathalys.com/mcp
+    status: 404
+  - url: https://pathalys.com/.well-known/agent-card.json
+    status: 404
+  note: >-
+    Pathalys Pharma ships no MCP server, remote or local. No endpoint URL is asserted here, and no
+    `MCPServer` pointer is wired into apis.yml — a derived candidate is not an agent surface the
+    provider serves, and pointing at one would score as though it were.
+candidate_tools:
+  note: >-
+    Derived one-to-one from the OpenAPI operations in this repo. These are what an MCP server over
+    the Pathalys content API would expose if anyone built one; each inherits its backing operation's
+    parameters as its inputSchema.
+  tools:
+  - name: list_posts
+    rest: [listPosts]
+    description: List Pathalys news items, press releases and scientific updates.
+  - name: get_post
+    rest: [getPost]
+    description: Retrieve one news item by ID.
+  - name: list_pages
+    rest: [listPages]
+    description: List the corporate pages of pathalys.com.
+  - name: get_page
+    rest: [getPage]
+    description: Retrieve one corporate page by ID.
+  - name: search_content
+    rest: [searchContent]
+    description: Search across Pathalys posts and pages.
+  - name: list_media
+    rest: [listMedia]
+    description: List media library items — logos, team photography, press imagery.
+  - name: get_media_item
+    rest: [getMediaItem]
+    description: Retrieve one media item by ID.
+  - name: list_categories
+    rest: [listCategories]
+    description: List the two content categories — News and Scientific Updates.
+  - name: get_site_index
+    rest: [getSiteIndex]
+    description: Retrieve the site index — name, namespaces and route table.

@@ -1,0 +1,97 @@
+generated: '2026-08-26'
+method: derived
+source: openapi/pathalys-pharma-*-openapi.yml plus live 404/401 responses observed on https://pathalys.com/wp-json/ on 2026-08-26
+format: wp_error
+rfc9457: false
+envelope:
+  media_type: application/json
+  note: >-
+    The WordPress REST API does NOT emit RFC 9457 application/problem+json. It serializes a WP_Error
+    object with a machine-readable `code`, a human-readable `message`, and a `data` object that
+    repeats the HTTP status. An agent should branch on `code`, not on the message string.
+  shape:
+    code: string
+    message: string
+    data:
+      status: integer
+  observed_example:
+    request: GET https://pathalys.com/wp-json/wp/v2/posts/99999999
+    status: 404
+    body: '{"code":"rest_post_invalid_id","message":"Invalid post ID.","data":{"status":404}}'
+problem_types:
+- code: rest_post_invalid_id
+  status: 404
+  title: Invalid post ID.
+  applies_to:
+  - getPost
+  - getPage
+  - getMediaItem
+  remediation: The numeric ID does not resolve to a published object of that type. List the collection first and use an ID from it.
+  verified: probed
+- code: rest_term_invalid
+  status: 404
+  title: Term does not exist.
+  applies_to:
+  - getCategory
+  remediation: Call listCategories; only two terms exist on this site (News id 1, Scientific Updates id 11).
+  verified: derived
+- code: rest_comment_invalid_id
+  status: 404
+  title: Invalid comment ID.
+  applies_to:
+  - getComment
+  remediation: The comments collection is empty on pathalys.com, so every single-comment lookup will fail.
+  verified: derived
+- code: rest_type_invalid
+  status: 404
+  title: Invalid post type.
+  applies_to:
+  - getType
+  remediation: Call listTypes for the registered slugs.
+  verified: derived
+- code: rest_post_invalid_page_number
+  status: 400
+  title: The page number requested is larger than the number of pages available.
+  applies_to:
+  - listPosts
+  - listPages
+  - listMedia
+  remediation: Read X-WP-TotalPages from the collection response and stop paging at that value.
+  verified: derived
+- code: rest_invalid_param
+  status: 400
+  title: Invalid parameter(s).
+  applies_to:
+  - listPosts
+  - listPages
+  - listMedia
+  - listCategories
+  - listComments
+  - searchContent
+  remediation: >-
+    `data.params` names the offending parameter. Most common causes are per_page above 100 and
+    context=edit, which is not available anonymously.
+  verified: derived
+- code: rest_forbidden
+  status: 401
+  title: Sorry, you are not allowed to do that.
+  applies_to:
+  - /wp/v2/settings
+  remediation: >-
+    Administrative endpoints require WordPress authentication. Pathalys issues no third-party
+    credentials; there is no path for an outside consumer to satisfy this.
+  verified: probed
+- code: rest_post_incorrect_password
+  status: 401
+  title: Incorrect post password.
+  applies_to:
+  - getPost
+  remediation: Supply the `password` query parameter for password-protected posts. None are protected on this site.
+  verified: derived
+- code: rest_no_route
+  status: 404
+  title: No route was found matching the URL and request method.
+  applies_to:
+  - all
+  remediation: Fetch the site index at /wp-json/ and use the advertised route table.
+  verified: derived

@@ -1,0 +1,109 @@
+generated: '2026-08-26'
+method: derived
+source: >-
+  openapi/pathalys-pharma-*-openapi.yml, the WordPress REST route index at https://pathalys.com/wp-json/,
+  and live response headers observed on 2026-08-26
+scope: >-
+  Cross-cutting runtime semantics of the only machine-readable surface Pathalys Pharma exposes — the
+  anonymously readable WordPress REST content API on pathalys.com. Pathalys publishes no developer
+  documentation of its own; these conventions are WordPress core behaviour verified against this
+  specific install, not a provider-authored contract.
+authentication:
+  style: none
+  detail: Every modelled operation is anonymous. See authentication/pathalys-pharma-authentication.yml.
+pagination:
+  style: page-number
+  parameters:
+    page: 1-based page index, default 1
+    per_page: page size, default 10, maximum 100
+    offset: alternative absolute offset, overrides page
+  response_headers:
+    X-WP-Total: total item count in the collection
+    X-WP-TotalPages: total number of pages at the current per_page
+    Link: RFC 8288 rel="next" / rel="prev" links
+  observed:
+    request: GET https://pathalys.com/wp-json/wp/v2/posts?per_page=1
+    x_wp_total: 14
+    x_wp_totalpages: 14
+    link: '<https://pathalys.com/wp-json/wp/v2/posts?per_page=1&page=2>; rel="next"'
+  note: >-
+    Both headers are named in Access-Control-Expose-Headers, so they are readable from a browser
+    context as well as server side.
+sparse_fields:
+  supported: true
+  parameter: _fields
+  detail: Comma-separated allow-list of top-level fields, e.g. `_fields=id,slug,title,link`.
+expansion:
+  supported: true
+  parameter: _embed
+  detail: >-
+    Inlines linked resources — author, wp:featuredmedia, wp:term, replies — into an `_embedded`
+    member, saving a round trip per relationship.
+filtering:
+  common: [search, slug, include, exclude, after, before, modified_after, modified_before, order, orderby]
+  detail: Date filters take ISO 8601 values. `search` is a full-text LIKE match, not ranked.
+context_negotiation:
+  parameter: context
+  values_available_anonymously: [view, embed]
+  values_requiring_auth: [edit]
+metadata:
+  supported: false
+  detail: No public custom-field/meta surface is exposed on this install.
+request_id_tracing:
+  supported: false
+  detail: >-
+    No correlation-ID request or response header is issued. WP Engine returns X-Cache, X-Cache-Group
+    and X-Cacheable, which describe cache disposition rather than request identity.
+versioning:
+  style: path-namespace
+  current: wp/v2
+  detail: >-
+    The version is the route namespace. The site index advertises 20 namespaces; wp/v2 and
+    oembed/1.0 are the only ones with an anonymously usable read surface.
+error_envelope:
+  format: wp_error
+  rfc9457: false
+  detail: See errors/pathalys-pharma-problem-types.yml. Branch on `code`, not on `message`.
+rate_limit_signaling:
+  headers_published: false
+  detail: >-
+    No X-RateLimit-* or RateLimit-* headers are returned. See rate-limits/pathalys-pharma-rate-limits.yml.
+caching:
+  cache_control: max-age=600, must-revalidate
+  vary: Accept-Encoding, Cookie
+  edge: 'WP Engine (x-powered-by: WP Engine, x-cacheable: SHORT, x-cache: HIT)'
+  conditional_requests: ETag/Last-Modified not observed on collection responses
+  note: >-
+    robots.txt advertises Crawl-delay 10, and collection responses carry an X-Robots-Tag of noindex. A
+    polite agent should treat 10 seconds between requests as the provider's stated pace.
+cors:
+  allow_headers: [Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type]
+  expose_headers: [X-WP-Total, X-WP-TotalPages, Link]
+idempotency:
+  status: na
+  reason: >-
+    The public surface is read-only. Every modelled operation is a GET, so there is no double-fire
+    risk for an idempotency key to protect against. Write routes exist on the same paths but are
+    administrator-only and are not offered to third parties.
+dry_run_mode:
+  status: na
+  reason: Read-only public surface — nothing to rehearse.
+reversibility:
+  status: na
+  grade: na
+  reason: >-
+    Pathalys Pharma exposes no public write surface. There is no create, update, delete, purchase or
+    dispatch operation an agent can perform anonymously, so there is nothing to reverse. The WordPress
+    write routes registered on these same paths require administrator credentials Pathalys does not
+    issue to third parties, and this pipeline does not model them.
+  write_surfaces: []
+  documented_windows: []
+  note: >-
+    Recorded as `na` deliberately rather than left blank: an honest not-applicable leaves the
+    denominator, where an omission would read as an unmeasured gap.
+cross_references:
+  errors: errors/pathalys-pharma-problem-types.yml
+  lifecycle: lifecycle/pathalys-pharma-lifecycle.yml
+  authentication: authentication/pathalys-pharma-authentication.yml
+  rate_limits: rate-limits/pathalys-pharma-rate-limits.yml
+  data_model: data-model/pathalys-pharma-data-model.yml

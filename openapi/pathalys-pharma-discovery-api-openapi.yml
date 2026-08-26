@@ -1,0 +1,269 @@
+openapi: 3.2.0
+info:
+  title: Pathalys Pharma Content API (WordPress REST API) Discovery API
+  version: wp/v2
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  contact:
+    name: Pathalys Pharma, Inc.
+    url: https://pathalys.com/contact/
+  x-derived-from: https://pathalys.com/wp-json/
+  x-derived-on: '2026-08-26'
+  x-api-evangelist-note: Derived by the API Evangelist enrichment pipeline from the provider-published WordPress REST route index; not authored or endorsed by Pathalys Pharma, Inc.
+servers:
+- url: https://pathalys.com/wp-json
+  description: Production
+security:
+- {}
+tags:
+- name: Discovery
+  description: Site index, route/namespace table, content types, taxonomies, statuses and oEmbed
+paths:
+  /:
+    get:
+      operationId: getSiteIndex
+      tags:
+      - Discovery
+      summary: Retrieve the site index
+      description: The WordPress REST API root. Returns the site name (`Pathalys Pharma`), home/url, the registered namespaces (20 at the time of derivation, including wp/v2, oembed/1.0 and the WP Engine plugin namespaces), the full route table with methods and args, the site logo/icon IDs, and the `authentication` block advertising application-password authorization.
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/fields'
+      - name: namespace
+        in: query
+        description: Restrict the index to a single namespace, e.g. `wp/v2`.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: The site index.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SiteIndex'
+  /wp/v2/types:
+    get:
+      operationId: listTypes
+      tags:
+      - Discovery
+      summary: List registered content types
+      description: 'Lists the post types registered on pathalys.com: post, page, attachment, nav_menu_item, wp_block, wp_template, wp_template_part, wp_global_styles, wp_navigation, wp_font_family, wp_font_face, elementor_library and elementor_snippet.'
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/fields'
+      responses:
+        '200':
+          description: A map of type slug to type object.
+          content:
+            application/json:
+              schema:
+                type: object
+  /wp/v2/types/{type}:
+    get:
+      operationId: getType
+      tags:
+      - Discovery
+      summary: Retrieve a single content type
+      description: Retrieves one registered post type by slug.
+      security:
+      - {}
+      parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+        description: An alphanumeric identifier for the post type.
+      - $ref: '#/components/parameters/context'
+      responses:
+        '200':
+          description: The content type.
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Invalid post type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: rest_type_invalid
+                message: Invalid post type.
+                data:
+                  status: 404
+  /wp/v2/taxonomies:
+    get:
+      operationId: listTaxonomies
+      tags:
+      - Discovery
+      summary: List registered taxonomies
+      description: Lists the taxonomies registered on the site (category, post_tag and the Elementor library taxonomies).
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/fields'
+      - name: type
+        in: query
+        description: Limit results to taxonomies associated with a specific post type.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: A map of taxonomy slug to taxonomy object.
+          content:
+            application/json:
+              schema:
+                type: object
+  /wp/v2/statuses:
+    get:
+      operationId: listStatuses
+      tags:
+      - Discovery
+      summary: List registered post statuses
+      description: Lists the post statuses visible anonymously. Only `publish` is public on this site.
+      security:
+      - {}
+      parameters:
+      - $ref: '#/components/parameters/context'
+      - $ref: '#/components/parameters/fields'
+      responses:
+        '200':
+          description: A map of status slug to status object.
+          content:
+            application/json:
+              schema:
+                type: object
+  /oembed/1.0/embed:
+    get:
+      operationId: getOEmbed
+      tags:
+      - Discovery
+      summary: Retrieve an oEmbed response for a pathalys.com URL
+      description: Returns the oEmbed 1.0 rich/link representation for any URL on pathalys.com — the discovery surface most consumers of this site actually use.
+      security:
+      - {}
+      parameters:
+      - name: url
+        in: query
+        required: true
+        description: The URL of the post to embed.
+        schema:
+          type: string
+          format: uri
+        example: https://pathalys.com/
+      - name: format
+        in: query
+        description: The oEmbed format to use.
+        schema:
+          type: string
+          default: json
+          enum:
+          - json
+          - xml
+      - name: maxwidth
+        in: query
+        description: The maximum width of the embed frame in pixels.
+        schema:
+          type: integer
+          default: 600
+      responses:
+        '200':
+          description: The oEmbed response.
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Invalid URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: oembed_invalid_url
+                message: Invalid URL.
+                data:
+                  status: 404
+components:
+  parameters:
+    context:
+      name: context
+      in: query
+      description: Scope under which the request is made; determines fields present in the response. Only `view` and `embed` are available anonymously.
+      schema:
+        type: string
+        default: view
+        enum:
+        - view
+        - embed
+    fields:
+      name: _fields
+      in: query
+      description: Sparse fieldset — comma-separated list of fields to return.
+      schema:
+        type: string
+      example: id,slug,title,link,date
+  schemas:
+    SiteIndex:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Pathalys Pharma
+        description:
+          type: string
+        url:
+          type: string
+          format: uri
+          example: https://pathalys.com
+        home:
+          type: string
+          format: uri
+        gmt_offset:
+          type: number
+        timezone_string:
+          type: string
+        namespaces:
+          type: array
+          items:
+            type: string
+        authentication:
+          type: object
+          description: Advertised authentication mechanisms. pathalys.com advertises application-passwords with the authorization endpoint https://pathalys.com/wp-admin/authorize-application.php.
+        routes:
+          type: object
+          description: The full route table — path to {namespace, methods, endpoints, args, _links}.
+        site_logo:
+          type: integer
+          description: Media ID of the site logo (205 — pathalys_logo.svg).
+        site_icon_url:
+          type: string
+          format: uri
+    Error:
+      type: object
+      description: WordPress REST API error envelope (WP_Error serialization). Not RFC 9457 problem+json; the HTTP status is repeated inside `data.status`.
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+          example: rest_post_invalid_id
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              description: HTTP status code, repeated in the body.
+              example: 404
+      required:
+      - code
+      - message

@@ -1,0 +1,34 @@
+generated: '2026-08-26'
+method: probed
+source: >-
+  live response headers from https://pathalys.com/wp-json/wp/v2/posts and https://pathalys.com/robots.txt,
+  observed 2026-08-26
+limit_count: 0
+limits: []
+response_headers:
+  published: false
+  observed: []
+  note: >-
+    No X-RateLimit-*, no RateLimit-* (RFC 9239 draft), and no Retry-After header was returned on any
+    probed response. An agent gets no runtime budget signal from this API at all — it cannot tell how
+    close it is to a limit, and will only discover one by being cut off.
+exhaustion_status: unknown
+stated_pace:
+  source: https://pathalys.com/robots.txt
+  directive: 'Crawl-delay: 10'
+  note: >-
+    The only quantitative pacing statement Pathalys publishes. It is a robots directive rather than
+    an API rate limit, but it is the provider's own stated expectation and a well-behaved agent
+    should honour ~10 seconds between requests.
+edge_behaviour:
+  provider: WP Engine
+  evidence: 'x-powered-by: WP Engine; x-cacheable: SHORT; x-cache: HIT; cache-control: max-age=600, must-revalidate'
+  note: >-
+    Responses are edge-cached for 600 seconds, so repeat reads within that window are served from
+    cache. WP Engine applies platform-level abuse protection that is neither documented for this
+    tenant nor advertised in headers; the route /wpe/cache-plugin/v1/rate_limit_status exists in the
+    route index but is a POST administrative endpoint and returns nothing anonymously.
+note: >-
+  Recorded as an honest zero. Pathalys documents no rate limits because it runs no developer program;
+  this is a marketing site's CMS API, and the absence of a limit is not a generous quota — it is an
+  unspecified one.
