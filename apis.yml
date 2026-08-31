@@ -40,13 +40,13 @@ created: '2026-08-26'
 modified: '2026-08-26'
 tags:
 - Company
-- Pharmaceuticals
-- Biotechnology
-- Nephrology
-- Chronic Kidney Disease
-- Clinical Trials
-- Life Sciences
-- Content API
+- pharmaceuticals
+- biotechnology
+- nephrology
+- chronic-kidney-disease
+- clinical-trials
+- life-sciences
+- content-api
 tags_raw:
 - Company
 - pharmaceuticals
