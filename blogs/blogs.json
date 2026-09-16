@@ -16,6 +16,20 @@
       "method": "discovered"
     },
     {
+      "source": "https://pathalys.com/news/feed/",
+      "feed_url": "https://pathalys.com/news/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
+      "source": "https://pathalys.com/scientific-updates/blog/feed/",
+      "feed_url": "https://pathalys.com/scientific-updates/blog/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
+    },
+    {
       "source": "https://pathalys.com/feed/",
       "feed_url": "https://pathalys.com/feed/",
       "title": "",
@@ -24,5 +38,5 @@
     }
   ],
   "post_count": 10,
-  "fetched": "2026-09-06T19:17:18Z"
+  "fetched": "2026-09-13T13:00:00Z"
 }
