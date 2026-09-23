@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Pathalys Pharma Content API (WordPress REST API) Discovery API
+  title: Pathalys Pharma Content API (WordPress REST API) ……
   version: wp/v2
-  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/.
   contact:
     name: Pathalys Pharma, Inc.
     url: https://pathalys.com/contact/
@@ -192,6 +192,13 @@ paths:
                   status: 404
 components:
   parameters:
+    fields:
+      name: _fields
+      in: query
+      description: Sparse fieldset — comma-separated list of fields to return.
+      schema:
+        type: string
+      example: id,slug,title,link,date
     context:
       name: context
       in: query
@@ -202,14 +209,29 @@ components:
         enum:
         - view
         - embed
-    fields:
-      name: _fields
-      in: query
-      description: Sparse fieldset — comma-separated list of fields to return.
-      schema:
-        type: string
-      example: id,slug,title,link,date
   schemas:
+    Error:
+      type: object
+      description: WordPress REST API error envelope (WP_Error serialization). Not RFC 9457 problem+json; the HTTP status is repeated inside `data.status`.
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code.
+          example: rest_post_invalid_id
+        message:
+          type: string
+          description: Human-readable error message.
+          example: Invalid post ID.
+        data:
+          type: object
+          properties:
+            status:
+              type: integer
+              description: HTTP status code, repeated in the body.
+              example: 404
+      required:
+      - code
+      - message
     SiteIndex:
       type: object
       properties:
@@ -245,25 +267,3 @@ components:
         site_icon_url:
           type: string
           format: uri
-    Error:
-      type: object
-      description: WordPress REST API error envelope (WP_Error serialization). Not RFC 9457 problem+json; the HTTP status is repeated inside `data.status`.
-      properties:
-        code:
-          type: string
-          description: Machine-readable error code.
-          example: rest_post_invalid_id
-        message:
-          type: string
-          description: Human-readable error message.
-          example: Invalid post ID.
-        data:
-          type: object
-          properties:
-            status:
-              type: integer
-              description: HTTP status code, repeated in the body.
-              example: 404
-      required:
-      - code
-      - message

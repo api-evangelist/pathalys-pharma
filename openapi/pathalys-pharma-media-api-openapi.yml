@@ -2,7 +2,7 @@ openapi: 3.2.0
 info:
   title: Pathalys Pharma Content API (WordPress REST API) Media API
   version: wp/v2
-  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/.
   contact:
     name: Pathalys Pharma, Inc.
     url: https://pathalys.com/contact/
@@ -133,64 +133,10 @@ paths:
                   status: 404
 components:
   parameters:
-    context:
-      name: context
-      in: query
-      description: Scope under which the request is made; determines fields present in the response. Only `view` and `embed` are available anonymously.
-      schema:
-        type: string
-        default: view
-        enum:
-        - view
-        - embed
-    page:
-      name: page
-      in: query
-      description: Current page of the collection.
-      schema:
-        type: integer
-        default: 1
-        minimum: 1
-    per_page:
-      name: per_page
-      in: query
-      description: Maximum number of items to be returned in the result set.
-      schema:
-        type: integer
-        default: 10
-        minimum: 1
-        maximum: 100
-    search:
-      name: search
-      in: query
-      description: Limit results to those matching a string.
-      schema:
-        type: string
     after:
       name: after
       in: query
       description: Limit response to posts published after a given ISO8601 compliant date.
-      schema:
-        type: string
-        format: date-time
-    before:
-      name: before
-      in: query
-      description: Limit response to posts published before a given ISO8601 compliant date.
-      schema:
-        type: string
-        format: date-time
-    modified_after:
-      name: modified_after
-      in: query
-      description: Limit response to posts modified after a given ISO8601 compliant date.
-      schema:
-        type: string
-        format: date-time
-    modified_before:
-      name: modified_before
-      in: query
-      description: Limit response to posts modified before a given ISO8601 compliant date.
       schema:
         type: string
         format: date-time
@@ -202,20 +148,22 @@ components:
         type: array
         items:
           type: integer
-    include:
-      name: include
+    context:
+      name: context
       in: query
-      description: Limit result set to specific IDs.
+      description: Scope under which the request is made; determines fields present in the response. Only `view` and `embed` are available anonymously.
       schema:
-        type: array
-        items:
-          type: integer
-    offset:
-      name: offset
+        type: string
+        default: view
+        enum:
+        - view
+        - embed
+    search:
+      name: search
       in: query
-      description: Offset the result set by a specific number of items.
+      description: Limit results to those matching a string.
       schema:
-        type: integer
+        type: string
     order:
       name: order
       in: query
@@ -226,6 +174,28 @@ components:
         enum:
         - asc
         - desc
+    page:
+      name: page
+      in: query
+      description: Current page of the collection.
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    modified_before:
+      name: modified_before
+      in: query
+      description: Limit response to posts modified before a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    id_path:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier for the resource.
+      schema:
+        type: integer
     slug:
       name: slug
       in: query
@@ -241,19 +211,49 @@ components:
       schema:
         type: string
       example: id,slug,title,link,date
+    per_page:
+      name: per_page
+      in: query
+      description: Maximum number of items to be returned in the result set.
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+    offset:
+      name: offset
+      in: query
+      description: Offset the result set by a specific number of items.
+      schema:
+        type: integer
     embed:
       name: _embed
       in: query
       description: Embed linked resources (featured media, terms, author) into the `_embedded` member.
       schema:
         type: string
-    id_path:
-      name: id
-      in: path
-      required: true
-      description: Unique identifier for the resource.
+    modified_after:
+      name: modified_after
+      in: query
+      description: Limit response to posts modified after a given ISO8601 compliant date.
       schema:
-        type: integer
+        type: string
+        format: date-time
+    before:
+      name: before
+      in: query
+      description: Limit response to posts published before a given ISO8601 compliant date.
+      schema:
+        type: string
+        format: date-time
+    include:
+      name: include
+      in: query
+      description: Limit result set to specific IDs.
+      schema:
+        type: array
+        items:
+          type: integer
   schemas:
     MediaItem:
       type: object
@@ -272,7 +272,7 @@ components:
         link:
           type: string
           format: uri
-        title: &id001
+        title:
           type: object
           description: A WordPress rendered-content object.
           properties:
@@ -284,7 +284,16 @@ components:
               description: Whether the content is password protected.
         author:
           type: integer
-        caption: *id001
+        caption:
+          type: object
+          description: A WordPress rendered-content object.
+          properties:
+            rendered:
+              type: string
+              description: HTML for the object, transformed for display.
+            protected:
+              type: boolean
+              description: Whether the content is password protected.
         alt_text:
           type: string
           description: Alternative text to display when attachment is not displayed.

@@ -1,8 +1,8 @@
 openapi: 3.2.0
 info:
-  title: Pathalys Pharma Content API (WordPress REST API) Categories API
+  title: Pathalys Pharma Content API (WordPress REST API) ……
   version: wp/v2
-  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/. Pathalys Pharma runs no developer program and publishes no hand-authored API specification; this document is a faithful derivation of the routes, parameters and defaults the site itself advertises, restricted to the read operations verified to return HTTP 200 without credentials on 2026-08-26. Write operations are registered on the same routes but are authenticated administrative endpoints (WordPress cookie/nonce or application passwords), not a public API offering, and are deliberately not modelled here.
+  description: Anonymously readable content API for pathalys.com, derived from the WordPress REST route index the site publishes at https://pathalys.com/wp-json/.
   contact:
     name: Pathalys Pharma, Inc.
     url: https://pathalys.com/contact/
@@ -67,7 +67,7 @@ paths:
       responses:
         '200':
           description: A page of categories.
-          headers: &id001
+          headers:
             X-WP-Total:
               description: Total number of items in the collection.
               schema:
@@ -151,7 +151,19 @@ paths:
       responses:
         '200':
           description: A page of tags (empty on this site).
-          headers: *id001
+          headers:
+            X-WP-Total:
+              description: Total number of items in the collection.
+              schema:
+                type: integer
+            X-WP-TotalPages:
+              description: Total number of pages in the collection.
+              schema:
+                type: integer
+            Link:
+              description: RFC 8288 pagination links (`rel="next"` / `rel="prev"`).
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -160,6 +172,14 @@ paths:
                   $ref: '#/components/schemas/Term'
 components:
   parameters:
+    exclude:
+      name: exclude
+      in: query
+      description: Ensure result set excludes specific IDs.
+      schema:
+        type: array
+        items:
+          type: integer
     context:
       name: context
       in: query
@@ -170,51 +190,12 @@ components:
         enum:
         - view
         - embed
-    page:
-      name: page
-      in: query
-      description: Current page of the collection.
-      schema:
-        type: integer
-        default: 1
-        minimum: 1
-    per_page:
-      name: per_page
-      in: query
-      description: Maximum number of items to be returned in the result set.
-      schema:
-        type: integer
-        default: 10
-        minimum: 1
-        maximum: 100
     search:
       name: search
       in: query
       description: Limit results to those matching a string.
       schema:
         type: string
-    exclude:
-      name: exclude
-      in: query
-      description: Ensure result set excludes specific IDs.
-      schema:
-        type: array
-        items:
-          type: integer
-    include:
-      name: include
-      in: query
-      description: Limit result set to specific IDs.
-      schema:
-        type: array
-        items:
-          type: integer
-    offset:
-      name: offset
-      in: query
-      description: Offset the result set by a specific number of items.
-      schema:
-        type: integer
     order:
       name: order
       in: query
@@ -225,6 +206,21 @@ components:
         enum:
         - asc
         - desc
+    page:
+      name: page
+      in: query
+      description: Current page of the collection.
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+    id_path:
+      name: id
+      in: path
+      required: true
+      description: Unique identifier for the resource.
+      schema:
+        type: integer
     slug:
       name: slug
       in: query
@@ -240,13 +236,29 @@ components:
       schema:
         type: string
       example: id,slug,title,link,date
-    id_path:
-      name: id
-      in: path
-      required: true
-      description: Unique identifier for the resource.
+    per_page:
+      name: per_page
+      in: query
+      description: Maximum number of items to be returned in the result set.
       schema:
         type: integer
+        default: 10
+        minimum: 1
+        maximum: 100
+    offset:
+      name: offset
+      in: query
+      description: Offset the result set by a specific number of items.
+      schema:
+        type: integer
+    include:
+      name: include
+      in: query
+      description: Limit result set to specific IDs.
+      schema:
+        type: array
+        items:
+          type: integer
   schemas:
     Term:
       type: object
