@@ -71,132 +71,20 @@ tags_raw:
 - life-sciences
 - content-api
 apis:
-- aid: pathalys-pharma:pathalys-pharma-posts-api
-  name: Pathalys Pharma Posts API
-  description: Pathalys Pharma news, press releases and scientific updates
-  humanURL: https://developer.wordpress.org/rest-api/
+- aid: pathalys-pharma:pathalys-com-website-wordpress-rest
+  name: Pathalys Pharma Website (WordPress REST)
+  description: 'The public WordPress REST API (wp-json) of the Pathalys Pharma website at pathalys.com:
+    the route index of the site''s content management system, catalogued as one site surface rather than
+    as separate APIs.'
   baseURL: https://pathalys.com/wp-json
   tags:
-  - Posts
+  - WordPress
+  x-surface: platform-generated
   properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-posts-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-pages-api
-  name: Pathalys Pharma Pages API
-  description: Corporate pages — company, team, science, contact and legal
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Pages
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-pages-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-media-api
-  name: Pathalys Pharma Media API
-  description: Media library — logos, team photography and press imagery
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Media
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-media-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-categories-api
-  name: Pathalys Pharma Categories API
-  description: Post categories and tags taxonomy
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Categories
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-categories-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-comments-api
-  name: Pathalys Pharma Comments API
-  description: Comments on posts (collection is empty on this site)
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Comments
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-comments-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-search-api
-  name: Pathalys Pharma Search API
-  description: Cross-content search over posts and pages
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Search
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-search-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
-- aid: pathalys-pharma:pathalys-pharma-discovery-api
-  name: Pathalys Pharma Discovery API
-  description: Site index, route/namespace table, content types, taxonomies, statuses and oEmbed
-  humanURL: https://developer.wordpress.org/rest-api/
-  baseURL: https://pathalys.com/wp-json
-  tags:
-  - Discovery
-  properties:
-  - type: OpenAPI
-    url: openapi/pathalys-pharma-discovery-api-openapi.yml
-  - type: Authentication
-    url: authentication/pathalys-pharma-authentication.yml
-  - type: ErrorCatalog
-    url: errors/pathalys-pharma-problem-types.yml
-  - type: Conventions
-    url: conventions/pathalys-pharma-conventions.yml
-  - type: DataModel
-    url: data-model/pathalys-pharma-data-model.yml
+  - type: Documentation
+    url: https://pathalys.com/wp-json
+  x-platform: wordpress
+  x-platform-surface: rest
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -229,8 +117,6 @@ common:
   url: https://forgeglobal.com/pathalys-pharma_stock/
 - type: Documentation
   url: https://developer.wordpress.org/rest-api/
-- type: Overlay
-  url: overlays/pathalys-pharma-content-overlay.yaml
 - type: Authentication
   url: authentication/pathalys-pharma-authentication.yml
 - type: Conventions
